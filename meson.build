@@ -15,6 +15,7 @@ else
   gst_version_nano = 0
 endif
 
+api_version = '1.0'
 libavfilter_dep = dependency('libavfilter', version: '>= 7.16.100',
   fallback: ['FFmpeg', 'libavfilter_dep'])
 libavformat_dep = dependency('libavformat', version: '>= 58.12.100',
@@ -180,13 +181,17 @@ endforeach
 
 configinc = include_directories('.')
 plugins_install_dir = '@0@/gstreamer-1.0'.format(get_option('libdir'))
+
 pkgconfig = import('pkgconfig')
 plugins_pkgconfig_install_dir = join_paths(plugins_install_dir, 'pkgconfig')
 if get_option('default_library') == 'shared'
   # If we don't build static plugins there is no need to generate pc files
   plugins_pkgconfig_install_dir = disabler()
 endif
+
+plugins = []
 subdir('ext/libav')
+subdir('docs')
 
 python3 = import('python').find_installation()
 run_command(python3, '-c', 'import shutil; shutil.copy("hooks/pre-commit.hook", ".git/hooks/pre-commit")')
